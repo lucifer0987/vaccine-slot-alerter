@@ -3,8 +3,9 @@ import json
 from playsound import playsound
 import time
 
-api_endpoint_1 = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=241&date=11-05-2021'
-api_endpoint_2 = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=331&date=11-05-2021'
+pincode = ['825409', '825109']
+api_endpoint_1 = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode='
+api_endpoint_2 = '&date=14-05-2021'
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
 
@@ -19,11 +20,14 @@ def getData(api_endpoint):
         session = c['sessions']
         for s in session:
             if s['min_age_limit'] == 18:
-                if s['available_capacity'] > 0:
+                if s['available_capacity'] > 5:
+                    print(c)
                     print(c['state_name'])
+                    print(c['district_name'])
+                    print(c['pincode'])
                     res += 1
 
-    print(c['state_name'])
+    print(c['pincode'])
     if res > 0:
         return True
 
@@ -32,9 +36,11 @@ def getData(api_endpoint):
 while True:
     print("\n\n")
     try:
-        if getData(api_endpoint_1):
-            break
-        if getData(api_endpoint_2):
+        gotit = False
+        for i in pincode:
+            if getData(api_endpoint_1+i+api_endpoint_2):
+                gotit = True
+        if gotit:
             break
         print("NO Error")
         time.sleep(10)
